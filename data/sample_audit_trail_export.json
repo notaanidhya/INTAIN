@@ -1,0 +1,32 @@
+[
+  {
+    "id": "AUD-001",
+    "loanId": "LN-1001",
+    "action": "IMPORT",
+    "field": "MULTIPLE",
+    "oldValue": null,
+    "newValue": "Raw CSV row ingested",
+    "performedBy": "Alex Chen (Data Operator)",
+    "timestamp": "2026-08-26T22:20:00.000Z"
+  },
+  {
+    "id": "AUD-002",
+    "loanId": "LN-1001",
+    "action": "VALIDATE",
+    "field": null,
+    "oldValue": null,
+    "newValue": "Validation rules executed: 0 errors found",
+    "performedBy": "Intain Validation Engine",
+    "timestamp": "2026-08-26T22:20:01.000Z"
+  },
+  {
+    "id": "AUD-003",
+    "loanId": "LN-1001",
+    "action": "VERIFY",
+    "field": "verificationStatus",
+    "oldValue": "PENDING",
+    "newValue": "a8f5c71b69d9e4a3c10842851f50a41bc978512e95a287fa83d1c4b1239ab7ef",
+    "performedBy": "Sarah Jenkins (QC Reviewer)",
+    "timestamp": "2026-08-26T22:30:00.000Z"
+  }
+]

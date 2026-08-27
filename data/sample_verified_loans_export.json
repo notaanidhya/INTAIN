@@ -1,0 +1,28 @@
+[
+  {
+    "loanId": "LN-1001",
+    "borrowerId": "BW-501",
+    "borrowerName": "Alice Johnson",
+    "loanType": "CONVENTIONAL",
+    "originationDate": "2024-01-15T00:00:00.000Z",
+    "maturityDate": "2054-01-15T00:00:00.000Z",
+    "originalPrincipal": 350000,
+    "currentBalance": 342000,
+    "interestRate": 6.25,
+    "termMonths": 360,
+    "borrowerState": "CA",
+    "loanPurpose": "PURCHASE",
+    "creditGrade": "A",
+    "employmentLength": "5 years",
+    "incomeBand": "$100k-$150k",
+    "paymentStatus": "CURRENT",
+    "daysPastDue": 0,
+    "servicerName": "Wells Fargo Servicing",
+    "documentStatus": "COMPLETE",
+    "verificationStatus": "VERIFIED",
+    "recordHash": "a8f5c71b69d9e4a3c10842851f50a41bc978512e95a287fa83d1c4b1239ab7ef",
+    "previousRecordHash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "verifiedAt": "2026-08-26T22:30:00.000Z",
+    "verifiedBy": "Sarah Jenkins (QC Reviewer)"
+  }
+]
