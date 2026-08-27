@@ -80,12 +80,22 @@ app.get('/verified-loans/:id', async (req: Request, res: Response): Promise<void
   }
 });
 
-// Health check route
-app.get('/health', (req: Request, res: Response) => {
+// Root & Health check routes for UptimeRobot / uptime monitors
+app.get('/', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'Loan Data Verification Copilot API'
+    service: 'CredoraTech Loan Verification API',
+    uptimeSeconds: Math.floor(process.uptime())
+  });
+});
+
+app.get(['/health', '/api/health'], (req: Request, res: Response) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    service: 'CredoraTech Loan Verification API',
+    uptimeSeconds: Math.floor(process.uptime())
   });
 });
 
