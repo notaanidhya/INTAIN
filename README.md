@@ -1,4 +1,4 @@
-# 🛡️ Intain Loan Data Verification Copilot
+# 🛡️ CredoraTech — Automated Loan Data Verification & Cryptographic Ledger Copilot
 > **Campus FinTech Challenge 2026 — Full Stack Track**  
 > *Transforming messy, conflicting loan tapes into validated, traceable, cryptographic truth.*
 
@@ -6,7 +6,7 @@
 
 ## 🌟 Executive Summary & Stand-Out Edge
 
-In structured finance and asset-backed securitization, platforms do not fail on mathematical formulas; they fail on **data trust**. The **Intain Loan Data Verification Copilot** is an enterprise-grade data governance platform and trust pipeline designed around Intain's core philosophy of **"Traceable Truth"**:
+In structured finance and asset-backed securitization, platforms do not fail on mathematical formulas; they fail on **data trust**. **CredoraTech** is an enterprise-grade data governance platform and trust pipeline designed around the core philosophy of **"Traceable Truth"**:
 1. **Multi-Source Ingestion & Lineage:** Normalizes 21-attribute loan tapes, ingests live servicer cash update feeds, and tracks custodial document manifests.
 2. **Intelligent Conflict Reconciliation:** Automatically compares secondary-source servicing updates against primary origination tapes, scoring source trustworthiness and identifying field discrepancies.
 3. **Data-Driven Validation & Fuzzy Duplicate Detection:** Executes dynamic validation rules from JSON and uses Levenshtein string-similarity algorithms to detect suspicious repeat borrowers.
@@ -17,39 +17,105 @@ In structured finance and asset-backed securitization, platforms do not fail on 
 
 ---
 
-## 📐 Architecture & Technology Stack
+## 📐 System Architecture
 
+```mermaid
+flowchart TB
+    %% CredoraTech Colored System Architecture %%
+
+    subgraph INGESTION["1. Multi-Source Ingestion & Lineage"]
+        TAPE["Primary Origination Tape<br/><code>loan_tape.csv (21 Fields)</code>"]
+        SERV["Secondary Servicer Cash Feed<br/><code>servicer_update.csv</code>"]
+        CUST["Custodian Vault Inventory<br/><code>document_manifest.csv</code>"]
+    end
+
+    subgraph NORMALIZATION["2. Universal Normalization & Triage"]
+        MAPPER["50+ Banking Alias Auto-Mapper"]
+        FUZZY["Fuzzy Borrower Deduplication<br/><code>Levenshtein Distance</code>"]
+    end
+
+    subgraph VALIDATION["3. Deterministic Validation Engine"]
+        RULES["Dynamic Rule Invariants<br/><code>Range, Comparison, Regex</code>"]
+        NL_COMPILER["Gemini 2.5 Flash Rule Compiler<br/><code>Natural Language to Policy</code>"]
+    end
+
+    subgraph COPILOT["4. Explainable AI QC Copilot & Section 9 Governance"]
+        QUEUE["Exception Triage Queue<br/><code>Critical / Error / Warning</code>"]
+        GEMINI["Gemini 2.5 Flash Root-Cause Analyzer<br/><code>Chain-of-Thought Telemetry</code>"]
+        HUMAN["Section 9 Human Decision Gate<br/><code>Accept Fix | Reject | Override</code>"]
+    end
+
+    subgraph RECON["5. Multi-Source Reconciliation Engine"]
+        CONFLICT["Field Discrepancy Scorer<br/><code>Tape Lineage vs Real-Time Cash</code>"]
+        COMMIT["Confidence-Weighted Commit Authority"]
+    end
+
+    subgraph CRYPTO["6. Cryptographic Ledger & Audit Lineage"]
+        CANONICAL["Sorted Canonical JSON Serialization"]
+        CHAIN["SHA-256 Chained Hash Traversal<br/><code>H(i) = SHA256(Record(i) + H(i-1))</code>"]
+        MERKLE["32-Byte Merkle Tree Root Anchor"]
+        TAMPER["Live Database Tamper Evidence Detector<br/><code>O(n) State Traversal Diagnostic</code>"]
+    end
+
+    subgraph CLIENT["7. Persona-Gated Workspaces (React 19 + Tailwind)"]
+        OP["Data Operator<br/><code>LOS Ingestion & Lineage</code>"]
+        REV["QC Reviewer<br/><code>AI Copilot & Overrides</code>"]
+        AUD["Data Consumer / Auditor<br/><code>Proof JSON & Ledger Integrity</code>"]
+    end
+
+    %% Data Flow Connections %%
+    TAPE --> MAPPER
+    SERV --> MAPPER
+    CUST --> MAPPER
+    MAPPER --> FUZZY
+    FUZZY --> RULES
+    NL_COMPILER -.->|Compiles Rules| RULES
+
+    RULES -->|Violations Found| QUEUE
+    QUEUE --> GEMINI
+    GEMINI --> HUMAN
+
+    SERV -.->|Reconciliation Feed| CONFLICT
+    CONFLICT --> COMMIT
+    COMMIT --> RULES
+
+    RULES -->|Clean & Passed| CANONICAL
+    HUMAN -->|Approved Corrections| CANONICAL
+    CANONICAL --> CHAIN
+    CHAIN --> MERKLE
+    TAMPER -.->|Integrity Traversal| CHAIN
+
+    CLIENT -.->|Role-Gated Actions| MAPPER
+    CLIENT -.->|Interactive Review| HUMAN
+    CLIENT -.->|Proof Exports & Verification| MERKLE
+
+    %% Styling and Colors %%
+    classDef ingestion fill:#1E293B,stroke:#64748B,stroke-width:2px,color:#F8FAFC;
+    classDef norm fill:#0F172A,stroke:#3B82F6,stroke-width:2px,color:#93C5FD;
+    classDef rules fill:#1E1B4B,stroke:#6366F1,stroke-width:2px,color:#E0E7FF;
+    classDef ai fill:#311042,stroke:#A855F7,stroke-width:2px,color:#F3E8FF;
+    classDef recon fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#D1FAE5;
+    classDef crypto fill:#451A03,stroke:#F59E0B,stroke-width:2px,color:#FEF3C7;
+    classDef client fill:#1E293B,stroke:#4F46E5,stroke-width:2px,color:#E0E7FF;
+
+    class TAPE,SERV,CUST ingestion;
+    class MAPPER,FUZZY norm;
+    class RULES,NL_COMPILER rules;
+    class QUEUE,GEMINI,HUMAN ai;
+    class CONFLICT,COMMIT recon;
+    class CANONICAL,CHAIN,MERKLE,TAMPER crypto;
+    class OP,REV,AUD,CLIENT client;
 ```
-                                  ┌──────────────────────────────────────────────┐
-                                  │           React 19 + Vite Frontend           │
-                                  │  (Role Switcher: Operator / Reviewer / Audit) │
-                                  └──────────────────────┬───────────────────────┘
-                                                         │ REST APIs
-                                                         ▼
-                                  ┌──────────────────────────────────────────────┐
-                                  │         Express + TypeScript Backend         │
-                                  │   - Ingestion Service (Multi-File Parsing)   │
-                                  │   - Dynamic Validation Engine (Rules JSON)   │
-                                  │   - Conflict Reconciliation Service          │
-                                  │   - Cryptographic Hash Chainer & Merkle Root │
-                                  │   - Google Gemini AI Service                 │
-                                  └──────────────────────┬───────────────────────┘
-                                                         │
-                                                         ▼
-                                  ┌──────────────────────────────────────────────┐
-                                  │            Prisma ORM + SQLite DB            │
-                                  │   - Loans (21 Canonical Fields + Hashes)     │
-                                  │   - Exceptions (Severity + AI Suggestions)   │
-                                  │   - Audit Trail (Append-Only Lineage)        │
-                                  │   - Validation Rules (Dynamic & Custom)      │
-                                  │   - Ledger State (Head Hash + Merkle Root)   │
-                                  └──────────────────────────────────────────────┘
-```
+
+---
+
+## 🛠️ Technology Stack
 
 - **Frontend:** React 19, Vite, Tailwind CSS, Lucide Icons, Recharts, TanStack Query, Axios.
-- **Backend:** Node.js, Express, TypeScript, Multer, CSV-Parser, Helmet, Morgan, Crypto.
-- **ORM & Database:** Prisma ORM, SQLite (local zero-configuration persistence).
-- **AI Engine:** Google Gemini (`@google/genai` with `gemini-2.5-flash` and structured JSON mime-types).
+- **Backend:** Node.js, Express (v5), TypeScript, Multer, CSV-Parser, Helmet, Morgan, Crypto.
+- **ORM & Database:** Prisma ORM, SQLite / PostgreSQL.
+- **AI Engine:** Google Gemini (`@google/genai` with `gemini-2.5-flash` and structured JSON schemas).
+- **Cryptography:** SHA-256 parent-hash chaining, sorted canonical JSON, Merkle tree root rollup.
 
 ---
 
@@ -81,8 +147,8 @@ npm run dev
 
 ## 👥 Test Personas & Role Switcher
 The application includes a built-in **Persona Switcher** in the top-left navigation sidebar with test credentials (`server/data/users.json`):
-1. **👷 Data Operator (`DATA_OPERATOR`):** Elena Rostova (`operator@intain.ai`) — Ingestion console, multi-source uploads (`loan_tape.csv`, `servicer_update.csv`, `document_manifest.csv`), upload history, and lineage tracking.
-2. **🔍 QC Reviewer (`REVIEWER`):** Marcus Vance (`reviewer@intain.ai`) — Exception resolution workspace, AI prompt inspector, voice copilot, conflict diff reconciler, and Natural Language Rule Generator.
+1. **👷 Data Operator (`DATA_OPERATOR`):** Elena Rostova (`operator@credoratech.ai`) — Ingestion console, multi-source uploads (`loan_tape.csv`, `servicer_update.csv`, `document_manifest.csv`), upload history, and lineage tracking.
+2. **🔍 QC Reviewer (`REVIEWER`):** Marcus Vance (`reviewer@credoratech.ai`) — Exception resolution workspace, AI prompt inspector, voice copilot, conflict diff reconciler, and Natural Language Rule Generator.
 3. **📊 Data Consumer / Auditor (`DATA_CONSUMER`):** Sophia Chen (`consumer@capitalmarkets.com`) — Verified records portfolio, Composite Data Quality Score (0–100), Cryptographic Ledger Integrity monitor, live tamper test demo, and 1-click export center (JSON proof, Audit CSV, Exceptions CSV).
 
 ---
@@ -106,6 +172,7 @@ All endpoints are available with both top-level and `/api/` prefixes for 100% ju
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
+| `GET` | `/` or `/health` | Server health check and uptime monitor ping endpoint. |
 | `GET` | `/loans` | Retrieve all normalized loan records with filters (`status`, `verificationStatus`, `search`). |
 | `GET` | `/loans/:id` | Get loan details, audit logs, and exception history. |
 | `PATCH`| `/loans/:id` | Inline asset field editor with automatic re-validation. |

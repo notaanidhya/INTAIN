@@ -8,17 +8,21 @@
 node_modules/
 */node_modules/
 
-# Build Outputs
+# Build Outputs & Deployment Caches
 dist/
 */dist/
 build/
 */build/
+.vercel/
+*/.vercel/
 
 # SQLite Database & Journal Files
 *.db
 *.db-journal
 server/prisma/*.db
 server/prisma/*.db-journal
+data/*.db
+data/*.db-journal
 
 # Temporary and Upload Files
 server/uploads/
@@ -51,6 +55,6 @@ Thumbs.db
 *.sln
 *.sw?
 
-# Brain and Generated Metadata
+# System Generated Metadata
 .system_generated/
 scratch/
