@@ -1,0 +1,37 @@
+[
+  {
+    "role": "DATA_OPERATOR",
+    "name": "Elena Rostova",
+    "email": "operator@intain.ai",
+    "department": "Data Operations & LOS Normalization",
+    "permissions": [
+      "INGEST_TAPES",
+      "VIEW_RAW_DATA",
+      "TRIGGER_VALIDATION"
+    ]
+  },
+  {
+    "role": "REVIEWER",
+    "name": "Marcus Vance",
+    "email": "reviewer@intain.ai",
+    "department": "Credit Quality Control & Exception Resolution",
+    "permissions": [
+      "RESOLVE_EXCEPTIONS",
+      "USE_AI_COPILOT",
+      "RECONCILE_CONFLICTS",
+      "OVERRIDE_FIELDS"
+    ]
+  },
+  {
+    "role": "DATA_CONSUMER",
+    "name": "Sophia Chen",
+    "email": "consumer@capitalmarkets.com",
+    "department": "Secondary Market Capital & Audit Governance",
+    "permissions": [
+      "VIEW_VERIFIED_LEDGER",
+      "INSPECT_BLOCKCHAIN",
+      "EXPORT_PROOFS",
+      "AUDIT_DOWNLOAD"
+    ]
+  }
+]

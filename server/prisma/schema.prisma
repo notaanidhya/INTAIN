@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Loan {
+  id                 String       @id @default(uuid())
+  loanId             String
+  borrowerId         String?
+  borrowerName       String?
+  loanType           String?      // CONVENTIONAL, FHA, VA, JUMBO, etc.
+  originationDate    DateTime?
+  maturityDate       DateTime?
+  originalPrincipal  Float        @default(0)
+  currentBalance     Float        @default(0)
+  interestRate       Float        @default(0)
+  termMonths         Int          @default(360)
+  borrowerState      String?
+  loanPurpose        String?      // PURCHASE, REFINANCE, CASH_OUT
+  creditGrade        String?      // A, B, C, D, F
+  employmentLength   String?      // e.g., "5 years"
+  incomeBand         String?      // e.g., "$50k-$75k"
+  paymentStatus      String?      // CURRENT, 30_DAYS_LATE, 60_DAYS_LATE, 90_PLUS_DAYS_LATE, DEFAULT, CLOSED
+  daysPastDue        Int          @default(0)
+  servicerName       String?
+  lastPaymentDate    DateTime?
+  lastUpdatedAt      DateTime?
+  documentStatus     String?      // COMPLETE, MISSING_NOTE, MISSING_INCOME, PENDING_REVIEW
+  sourceSystem       String?      // ORIGINATION_LOS, SERVICER_FEED, MANUAL_IMPORT
+  
+  // Verification and Traceability
+  verificationStatus String       @default("PENDING") // PENDING, EXCEPTIONS_FOUND, VERIFIED, REJECTED
+  recordHash         String?
+  previousRecordHash String?
+  verifiedAt         DateTime?
+  verifiedBy         String?
+  
+  // Conflict reconciliation
+  hasConflicts       Boolean      @default(false)
+  conflictDetails    String?      // JSON string of field discrepancies between sources
+  
+  // Lineage
+  rawJson            String?      // Raw source row representation
+  uploadId           String?
+  upload             Upload?      @relation(fields: [uploadId], references: [id])
+  
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  
+  exceptions         Exception[]
+  auditLogs          AuditLog[]
+}
+
+model Exception {
+  id              String    @id @default(uuid())
+  loanId          String
+  field           String
+  issueType       String
+  severity        String    // WARNING, ERROR, CRITICAL
+  originalValue   String
+  suggestedValue  String?
+  aiExplanation   String?
+  aiConfidence    Float?
+  aiModel         String?
+  aiPromptVersion String?
+  status          String    @default("OPEN") // OPEN, RESOLVED_ACCEPTED, RESOLVED_REJECTED, RESOLVED_MANUAL
+  reviewerComment String?
+  resolvedBy      String?
+  resolvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  
+  loan            Loan      @relation(fields: [loanId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  loanId      String?
+  action      String   // IMPORT, VALIDATE, AI_SUGGESTION, FIELD_EDIT, VERIFY, REJECT, CONFLICT_DETECTED, CONFLICT_RESOLVED, RULE_CREATED
+  field       String?
+  oldValue    String?
+  newValue    String?
+  performedBy String
+  metadata    String?  // JSON with extra info (AI model, latency, diffs)
+  timestamp   DateTime @default(now())
+  
+  loan        Loan?    @relation(fields: [loanId], references: [id], onDelete: Cascade)
+}
+
+model Upload {
+  id               String   @id @default(uuid())
+  filename         String
+  fileType         String   @default("LOAN_TAPE") // LOAN_TAPE, SERVICER_UPDATE, DOCUMENT_MANIFEST
+  totalRecords     Int      @default(0)
+  validRecords     Int      @default(0)
+  exceptionRecords Int      @default(0)
+  conflictRecords  Int      @default(0)
+  uploadedBy       String
+  status           String   @default("COMPLETED")
+  createdAt        DateTime @default(now())
+  
+  loans            Loan[]
+}
+
+model ValidationRule {
+  id              String   @id @default(uuid())
+  ruleCode        String   @unique
+  name            String
+  description     String
+  field           String
+  ruleType        String   // RANGE, COMPARISON, REQUIRED, REGEX, CONSISTENCY, FUZZY_DUPLICATE
+  parameters      String   // JSON string of config
+  severity        String   @default("ERROR") // ERROR, WARNING
+  errorMessage    String
+  isActive        Boolean  @default(true)
+  isCustom        Boolean  @default(false)
+  generatedPrompt String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model LedgerState {
+  id              String   @id @default("LEDGER_HEAD")
+  lastRecordHash  String?
+  merkleRoot      String?
+  totalVerified   Int      @default(0)
+  lastVerifiedAt  DateTime?
+  integrityStatus String   @default("VALID") // VALID, COMPROMISED
+  updatedAt       DateTime @updatedAt
+}

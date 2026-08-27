@@ -1,0 +1,168 @@
+[
+  {
+    "ruleCode": "REQ_LOAN_ID",
+    "name": "Required Loan ID",
+    "description": "Loan ID must be present and non-empty.",
+    "field": "loan_id",
+    "ruleType": "REQUIRED",
+    "severity": "ERROR",
+    "errorMessage": "Missing required Loan ID",
+    "isActive": true
+  },
+  {
+    "ruleCode": "REQ_BORROWER_ID",
+    "name": "Required Borrower ID",
+    "description": "Borrower ID must be present.",
+    "field": "borrower_id",
+    "ruleType": "REQUIRED",
+    "severity": "WARNING",
+    "errorMessage": "Missing Borrower ID",
+    "isActive": true
+  },
+  {
+    "ruleCode": "NUM_POSITIVE_PRINCIPAL",
+    "name": "Positive Principal Balance",
+    "description": "Original principal must be strictly greater than 0.",
+    "field": "original_principal",
+    "ruleType": "RANGE",
+    "severity": "ERROR",
+    "errorMessage": "Original principal cannot be negative or zero",
+    "parameters": {
+      "min": 1,
+      "max": 50000000
+    },
+    "isActive": true
+  },
+  {
+    "ruleCode": "NUM_NON_NEGATIVE_BALANCE",
+    "name": "Non-negative Current Balance",
+    "description": "Current balance must be >= 0.",
+    "field": "current_balance",
+    "ruleType": "RANGE",
+    "severity": "ERROR",
+    "errorMessage": "Current balance cannot be negative",
+    "parameters": {
+      "min": 0
+    },
+    "isActive": true
+  },
+  {
+    "ruleCode": "BAL_CURRENT_LTE_ORIGINAL",
+    "name": "Current Balance <= Original Principal",
+    "description": "Current balance cannot exceed the original principal loan amount.",
+    "field": "current_balance",
+    "ruleType": "BALANCE_INTEGRITY",
+    "severity": "ERROR",
+    "errorMessage": "Current balance exceeds original principal amount",
+    "isActive": true
+  },
+  {
+    "ruleCode": "RATE_REASONABLE_RANGE",
+    "name": "Interest Rate Range",
+    "description": "Interest rate must be within a plausible range (0.5% - 30.0%).",
+    "field": "interest_rate",
+    "ruleType": "RANGE",
+    "severity": "ERROR",
+    "errorMessage": "Interest rate outside expected range (0.5% - 30.0%)",
+    "parameters": {
+      "min": 0.5,
+      "max": 30
+    },
+    "isActive": true
+  },
+  {
+    "ruleCode": "DATE_MATURITY_AFTER_ORIG",
+    "name": "Maturity After Origination",
+    "description": "Maturity date must occur after the origination date.",
+    "field": "maturity_date",
+    "ruleType": "DATE_COMPARISON",
+    "severity": "ERROR",
+    "errorMessage": "Maturity date cannot be earlier than origination date",
+    "isActive": true
+  },
+  {
+    "ruleCode": "GEO_VALID_US_STATE",
+    "name": "Valid US State Code",
+    "description": "Borrower state must be a valid 2-letter postal abbreviation.",
+    "field": "borrower_state",
+    "ruleType": "STATE_CODE",
+    "severity": "ERROR",
+    "errorMessage": "Invalid US state code",
+    "isActive": true
+  },
+  {
+    "ruleCode": "STAT_DPD_CONSISTENCY",
+    "name": "Payment Status vs DPD Consistency",
+    "description": "Payment status must be aligned with days past due.",
+    "field": "payment_status",
+    "ruleType": "STATUS_CONSISTENCY",
+    "severity": "ERROR",
+    "errorMessage": "Payment status conflicts with days past due (e.g. Current with DPD > 0 or 30+ Late with DPD = 0)",
+    "isActive": true
+  },
+  {
+    "ruleCode": "STAT_CLOSED_ZERO_BALANCE",
+    "name": "Closed Loan Zero Balance",
+    "description": "Loans marked as CLOSED, PAID_OFF, or LIQUIDATED must have a current balance of $0.",
+    "field": "current_balance",
+    "ruleType": "STATUS_CONSISTENCY",
+    "severity": "ERROR",
+    "errorMessage": "Loan marked as CLOSED/PAID_OFF still shows positive current balance",
+    "isActive": true
+  },
+  {
+    "ruleCode": "DOC_STATUS_AVAILABLE",
+    "name": "Required Document Availability",
+    "description": "Loan must have complete verified documentation.",
+    "field": "document_status",
+    "ruleType": "REQUIRED",
+    "severity": "WARNING",
+    "errorMessage": "Required loan documentation is missing or incomplete",
+    "parameters": {
+      "invalidValues": [
+        "MISSING",
+        "INCOMPLETE",
+        "MISSING_NOTE",
+        "NONE",
+        ""
+      ]
+    },
+    "isActive": true
+  },
+  {
+    "ruleCode": "TIME_STALE_RECORD",
+    "name": "Stale Record Detection",
+    "description": "Flag records where last_updated_at is more than 180 days old.",
+    "field": "last_updated_at",
+    "ruleType": "STALENESS",
+    "severity": "WARNING",
+    "errorMessage": "Record has not been updated in over 180 days (stale servicing feed)",
+    "parameters": {
+      "maxDaysOld": 180
+    },
+    "isActive": true
+  },
+  {
+    "ruleCode": "DUP_FUZZY_BORROWER",
+    "name": "Suspicious Repeat Borrower / Near Duplicate",
+    "description": "Detect duplicate or near-duplicate loans for the same borrower with identical amounts.",
+    "field": "borrower_name",
+    "ruleType": "FUZZY_DUPLICATE",
+    "severity": "WARNING",
+    "errorMessage": "Potential duplicate loan record or repeated borrower anomaly detected",
+    "isActive": true
+  },
+  {
+    "ruleCode": "FIN_AMORTIZATION_INTEGRITY",
+    "name": "Mathematical Amortization Schedule Integrity",
+    "description": "Validates that current balance aligns mathematically with standard compound amortization based on principal, rate, term, and elapsed months.",
+    "field": "current_balance",
+    "ruleType": "AMORTIZATION_INTEGRITY",
+    "severity": "ERROR",
+    "errorMessage": "Current balance mathematically deviates from standard amortization schedule (possible balance inflation or servicer payment miscalculation)",
+    "parameters": {
+      "maxVariancePercent": 5
+    },
+    "isActive": true
+  }
+]

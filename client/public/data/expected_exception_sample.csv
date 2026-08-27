@@ -1,0 +1,15 @@
+loan_id,defect_type,severity,injected_field,description
+LN-1010,REQUIRED_LOAN_ID,ERROR,loan_id,Missing required loan ID
+LN-1010,DUPLICATE_LOAN_ID,ERROR,loan_id,Duplicate loan ID matching LN-1010
+LN-1030,SUSPICIOUS_REPEAT_BORROWER,WARNING,borrower_name,Exact duplicate borrower name and principal amount
+LN-1040,INVALID_DATE_FORMAT,ERROR,origination_date,Unparseable date string
+LN-1050,MATURITY_BEFORE_ORIGINATION,ERROR,maturity_date,Maturity date is earlier than origination date
+LN-1060,NEGATIVE_PRINCIPAL,ERROR,original_principal,Original principal balance cannot be negative
+LN-1070,CURRENT_EXCEEDS_PRINCIPAL,ERROR,current_balance,Current balance exceeds original principal loan amount
+LN-1080,RATE_OUT_OF_RANGE,ERROR,interest_rate,Interest rate 650% exceeds plausible 0.5%-30% range
+LN-1090,STATUS_DPD_INCONSISTENCY,ERROR,payment_status,Status is CURRENT but loan has 45 days past due
+LN-1100,MISSING_DOCUMENT_STATUS,WARNING,document_status,Required promissory note is missing
+LN-1110,STALE_SERVICING_RECORD,WARNING,last_updated_at,Record has not been updated in over 180 days
+LN-1120,INVALID_STATE_CODE,ERROR,borrower_state,Full state name instead of 2-letter postal code
+LN-1130,CLOSED_WITH_BALANCE,ERROR,current_balance,Loan marked CLOSED retains positive balance of $32,000
+LN-1140,AMORTIZATION_SCHEDULE_DEVIATION,ERROR,current_balance,Mathematical amortization drift >5%
