@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -39,7 +39,7 @@ app.use('/demo', demoRoutes);
 app.use('/export', exportRoutes);
 
 // Module H specific /verified-loans endpoints
-app.get('/verified-loans', async (req, res) => {
+app.get('/verified-loans', async (req: Request, res: Response) => {
   try {
     const verified = await prisma.loan.findMany({
       where: { verificationStatus: 'VERIFIED' },
@@ -51,7 +51,7 @@ app.get('/verified-loans', async (req, res) => {
   }
 });
 
-app.get('/api/verified-loans', async (req, res) => {
+app.get('/api/verified-loans', async (req: Request, res: Response) => {
   try {
     const verified = await prisma.loan.findMany({
       where: { verificationStatus: 'VERIFIED' },
@@ -63,10 +63,11 @@ app.get('/api/verified-loans', async (req, res) => {
   }
 });
 
-app.get('/verified-loans/:id', async (req, res): Promise<void> => {
+app.get('/verified-loans/:id', async (req: Request, res: Response): Promise<void> => {
   try {
+    const loanId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const loan = await prisma.loan.findFirst({
-      where: { id: req.params.id, verificationStatus: 'VERIFIED' },
+      where: { id: loanId, verificationStatus: 'VERIFIED' },
       include: { auditLogs: true }
     });
     if (!loan) {
@@ -80,7 +81,7 @@ app.get('/verified-loans/:id', async (req, res): Promise<void> => {
 });
 
 // Health check route
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
