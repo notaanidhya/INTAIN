@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '../components/ui';
 import { useNavigate } from 'react-router-dom';
-import { Search, Download, ShieldCheck, Eye, Sparkles, X, Filter, Cpu } from 'lucide-react';
+import { Search, Download, ShieldCheck, Eye, X, Filter, Cpu } from 'lucide-react';
 import type { Loan } from '../types';
 
 const SAMPLE_QUERIES = [
@@ -83,7 +83,7 @@ export const LoansList = () => {
         <CardContent className="p-4 space-y-2.5">
           <form onSubmit={handleNlSubmit} className="flex gap-2">
             <div className="relative flex-1">
-              <Sparkles className="absolute left-3 top-2.5 h-3.5 w-3.5 text-brand" />
+              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-brand" />
               <input
                 type="text"
                 placeholder="Query in natural language (e.g. 'Show me loans in CA with interest rate > 6% and delinquent DPD')..."

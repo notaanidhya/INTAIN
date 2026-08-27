@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   ArrowRight,
   ShieldAlert,
-  Sparkles,
+  Cpu,
   Check,
   X,
   FileSpreadsheet,
@@ -199,7 +199,7 @@ export const ConflictResolution = () => {
                                 </td>
                                 <td className="py-2.5 px-3 text-text-muted max-w-sm font-sans">
                                   <div className="font-semibold text-text-primary text-[11px] flex items-center gap-1.5 font-mono">
-                                    <Sparkles className="h-3 w-3 text-brand" />
+                                    <Cpu className="h-3 w-3 text-brand" />
                                     Recommendation: <span className="font-bold text-info">{String(c.recommendedValue)}</span>
                                     <Badge variant="outline" className="text-[10px] ml-auto">
                                       {Math.round((c.confidence || 0.9) * 100)}% Match

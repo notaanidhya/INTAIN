@@ -158,11 +158,11 @@ export const AppLayout = () => {
         <div className="h-14 flex items-center justify-between px-4 border-b border-border">
           <div className="flex items-center space-x-2.5">
             <div className="h-7 w-7 rounded bg-brand text-white flex items-center justify-center font-mono font-bold text-xs shadow-sm">
-              IN
+              CT
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-xs text-text-primary tracking-tight">INTAIN</span>
+                <span className="font-semibold text-xs text-text-primary tracking-tight">CredoraTech</span>
                 <span className="text-[10px] font-mono text-brand font-semibold px-1 py-0.2 rounded bg-brand-subtle border border-brand/25">TRUST OS</span>
               </div>
               <span className="block text-[9px] font-mono uppercase tracking-widest text-text-muted">Automated Verification</span>

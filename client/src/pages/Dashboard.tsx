@@ -16,7 +16,6 @@ import {
   FileSpreadsheet,
   FileCheck,
   Cpu,
-  Sparkles,
   Sliders
 } from 'lucide-react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
@@ -302,7 +301,7 @@ export const Dashboard = () => {
           <CardHeader className="pb-3 border-b border-border bg-bg-surface-alt/40">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-brand" />
+                <Cpu className="h-4 w-4 text-brand" />
                 <CardTitle className="text-xs font-semibold uppercase tracking-wider text-text-primary">
                   Anomaly Diagnostics & Severity Matrix
                 </CardTitle>

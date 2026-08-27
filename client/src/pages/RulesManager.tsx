@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '../components/ui';
-import { Sparkles, Check, AlertCircle, Cpu } from 'lucide-react';
+import { Check, AlertCircle, Cpu } from 'lucide-react';
 
 export const RulesManager = () => {
   const queryClient = useQueryClient();
@@ -84,7 +84,7 @@ export const RulesManager = () => {
               className="h-8 text-xs font-mono bg-brand text-white gap-1.5 shadow-sm"
               disabled={!nlPrompt.trim() || generateRuleMutation.isPending}
             >
-              <Sparkles className="h-3.5 w-3.5" />
+              <Cpu className="h-3.5 w-3.5" />
               {generateRuleMutation.isPending ? 'COMPILING...' : 'Synthesize Rule'}
             </Button>
           </form>

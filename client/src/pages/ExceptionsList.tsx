@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '../components/ui';
 import { useNavigate } from 'react-router-dom';
-import { Filter, Sparkles, RefreshCw, CheckCircle2, Check, X, Cpu } from 'lucide-react';
+import { Filter, RefreshCw, CheckCircle2, Check, X, Cpu } from 'lucide-react';
 import { useRole } from '../context/RoleContext';
 
 export const ExceptionsList = () => {
@@ -289,7 +289,7 @@ export const ExceptionsList = () => {
                           className="gap-1.5 text-xs h-7"
                           onClick={() => navigate(`/exceptions/${exception.id}`)}
                         >
-                          <Sparkles className="h-3 w-3" /> {exception.status === 'OPEN' ? 'AI Review' : 'View Fix'}
+                          <Cpu className="h-3 w-3" /> {exception.status === 'OPEN' ? 'Review Anomaly' : 'View Fix'}
                         </Button>
                       </td>
                     </tr>

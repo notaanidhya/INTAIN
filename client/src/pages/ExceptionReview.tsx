@@ -5,7 +5,6 @@ import { apiService } from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '../components/ui';
 import {
   ArrowLeft,
-  Sparkles,
   AlertTriangle,
   Check,
   X,
@@ -39,6 +38,8 @@ export const ExceptionReview = () => {
   const [isListening, setIsListening] = useState(false);
   const [voiceFeedback, setVoiceFeedback] = useState<string | null>(null);
   const recognitionRef = useRef<any>(null);
+
+  const isSpeechSupported = typeof window !== 'undefined' && !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
   const [aiResult, setAiResult] = useState<{
     reasoning_steps?: string[];
@@ -74,48 +75,53 @@ export const ExceptionReview = () => {
     }
   });
 
-  // Setup Web Speech API
+  // Setup Web Speech API (supported in Chrome/Edge; handled gracefully in Firefox)
   useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
+    try {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
 
-    recognition.onresult = (event: any) => {
-      const current = event.resultIndex;
-      const transcript = event.results[current][0].transcript.toLowerCase().trim();
-      setVoiceFeedback(`Heard: "${transcript}"`);
+      recognition.onresult = (event: any) => {
+        const current = event.resultIndex;
+        const transcript = event.results[current][0].transcript.toLowerCase().trim();
+        setVoiceFeedback(`Heard: "${transcript}"`);
 
-      if (transcript.includes('analyze') || transcript.includes('ask ai') || transcript.includes('suggest')) {
-        setVoiceFeedback('Voice Command: Running AI Analysis...');
-        aiAssistMutation.mutate();
-      } else if (transcript.includes('accept')) {
-        setVoiceFeedback('Voice Command: Accepting AI Suggestion...');
-        resolveMutation.mutate({ action: 'ACCEPT_AI' });
-      } else if (transcript.includes('reject')) {
-        setVoiceFeedback('Voice Command: Rejecting Exception...');
-        resolveMutation.mutate({ action: 'REJECT_AI' });
-      }
-    };
+        if (transcript.includes('analyze') || transcript.includes('ask ai') || transcript.includes('suggest')) {
+          setVoiceFeedback('Voice Command: Running AI Analysis...');
+          aiAssistMutation.mutate();
+        } else if (transcript.includes('accept')) {
+          setVoiceFeedback('Voice Command: Accepting AI Suggestion...');
+          resolveMutation.mutate({ action: 'ACCEPT_AI' });
+        } else if (transcript.includes('reject')) {
+          setVoiceFeedback('Voice Command: Rejecting Exception...');
+          resolveMutation.mutate({ action: 'REJECT_AI' });
+        }
+      };
 
-    recognition.onerror = (e: any) => {
-      console.warn('Speech Recognition Error:', e.error);
-      setIsListening(false);
-    };
+      recognition.onerror = (e: any) => {
+        console.warn('Speech Recognition notice:', e.error);
+        setIsListening(false);
+      };
 
-    recognition.onend = () => {
-      setIsListening(false);
-    };
+      recognition.onend = () => {
+        setIsListening(false);
+      };
 
-    recognitionRef.current = recognition;
+      recognitionRef.current = recognition;
+    } catch {
+      // Speech recognition not supported in current browser environment
+      recognitionRef.current = null;
+    }
   }, [aiAssistMutation, resolveMutation]);
 
   const toggleVoice = () => {
-    if (!recognitionRef.current) {
-      alert('Web Speech API is not supported in this browser.');
+    if (!isSpeechSupported || !recognitionRef.current) {
+      setVoiceFeedback('Voice Copilot requires Chrome or Edge (Web Speech API is not supported in Firefox). Use Action buttons below.');
       return;
     }
     if (isListening) {
@@ -128,7 +134,8 @@ export const ExceptionReview = () => {
         setIsListening(true);
         setVoiceFeedback('Listening for voice commands ("Analyze", "Accept", "Reject")...');
       } catch (err) {
-        console.error(err);
+        console.warn(err);
+        setVoiceFeedback('Microphone permission needed or already listening.');
       }
     }
   };
@@ -149,10 +156,17 @@ export const ExceptionReview = () => {
       {voiceFeedback && (
         <div className="bg-brand-subtle border border-brand/30 text-brand px-3 py-1.5 rounded text-xs font-mono flex items-center justify-between shadow-sm animate-fade-in">
           <div className="flex items-center gap-2">
-            <Volume2 className="h-3.5 w-3.5 animate-pulse text-brand" />
-            <span>{voiceFeedback}</span>
+            <Volume2 className="h-3.5 w-3.5 animate-pulse text-brand shrink-0" />
+            <span className="text-[11px]">{voiceFeedback}</span>
           </div>
-          <span className="text-[10px] text-text-muted uppercase">Voice Assistant Active</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-5 px-1.5 text-[10px] text-text-muted hover:text-text-primary"
+            onClick={() => setVoiceFeedback(null)}
+          >
+            <X className="h-3 w-3" />
+          </Button>
         </div>
       )}
 
@@ -188,7 +202,7 @@ export const ExceptionReview = () => {
             size="sm"
             onClick={toggleVoice}
             className={`gap-1.5 h-7 text-xs ${isListening ? 'border-brand text-brand bg-brand-subtle animate-pulse' : ''}`}
-            title="Voice Commands: Say 'Analyze', 'Accept AI', or 'Reject'"
+            title={isSpeechSupported ? "Voice Commands: Say 'Analyze', 'Accept AI', or 'Reject'" : "Voice recognition is supported in Chrome & Edge (Firefox does not support Web Speech API)"}
           >
             {isListening ? (
               <>
@@ -286,9 +300,9 @@ export const ExceptionReview = () => {
             <CardHeader className="p-4 pb-2 border-b border-border bg-bg-surface-alt/30">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="h-3.5 w-3.5 text-brand" />
+                  <Cpu className="h-3.5 w-3.5 text-brand" />
                   <CardTitle className="text-xs font-semibold uppercase tracking-wider text-text-primary">
-                    Explainable AI Analyst (Intain Copilot)
+                    Explainable AI Analyst (CredoraTech Copilot)
                   </CardTitle>
                 </div>
                 {exception.aiModel && (
@@ -404,7 +418,7 @@ export const ExceptionReview = () => {
                             System Grounding Payload:
                           </span>
                           <pre className="whitespace-pre-wrap text-[10px] leading-relaxed max-h-40 overflow-y-auto text-text-secondary bg-bg-surface p-2 rounded border border-border">
-                            {aiResult?.grounding_prompt || `You are a Senior Loan Quality Control Analyst and Auditor at Intain FinTech.
+                            {aiResult?.grounding_prompt || `You are a Senior Loan Quality Control Analyst and Auditor at CredoraTech FinTech.
 Field failed: "${exception.field}"
 Current invalid value: "${exception.originalValue}"
 Issue description: "${exception.issueType}"
